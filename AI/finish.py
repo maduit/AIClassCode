@@ -10,7 +10,7 @@ def caldis(a,b,mode):
             return s_m
     else:
         return -1
-def caldis_smaple_newpoint(samples,newpoint,mode):
+def caldis_sample_newpoint(samples,newpoint,mode):
     diss=[caldis(samples[i],newpoint,mode) for i in range(len(samples))]
     return diss
 
@@ -25,5 +25,5 @@ def sort_m(diss,k):
 
 samples=[[2,1],[0,1],[0.3,0.7],[0.8,1.2],[0.77,0.963],[1.5,-0.23],[3.3,1.7]]
 newpoint=[0,0]
-diss=caldis_smaple_newpoint(samples,newpoint,'o')
+diss=caldis_sample_newpoint(samples,newpoint,'o')
 print(sort_m(diss,3))
