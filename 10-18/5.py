@@ -1,0 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt
+def drawline(k,b,linestyle):
+    x=np.arange(0,6)
+    y=k*x+b
+    plt.plot(x,y,linestyle)
+
+def J(k,b,sample):
+    return sample[1]-(k*sample[0]+b)
+def main():
+    rs=np.array([[0,2.5],[1,2.5],[2,2.8],[3,3.5],[4,3.5],[5,3.4]])
+    bs=np.array([[0,0.5],[1,1.5],[2,1.8],[3,2],[4,2.5],[5,2.5]])
+    plt.plot(rs[:,0],rs[:,1],'r*')
+    plt.plot(bs[:,0],bs[:,1],'bs')
+
+
+    k,b=1,0
+    drawline(k,b,'g--')
+
+
+
+    for ind in range(10):
+         dk=db=0.001
+         djdk_rs=(J(k+dk,b,rs)-J(k,b,rs))/dk
+         djdb_rs=(J(k,b+db,rs)-J(k,b,rs))/db
+
+
+         djdk_bs=(J(k+dk,b,bs)-J(k,b,bs))/dk
+         djdb_bs=(J(k,b+db,bs)-J(k,b,bs))/db
+         print(djdk_rs)
+    # dJdk1=(J(k+dk,b,rs[-1])-J(k,b,rs[-1]))/dk
+    # dJdb1=(J(k,b+db,rs[-1])-J(k,b,rs[-1]))/db
+
+    # dJdk2=(J(k+dk,b,rs[-2])-J(k,b,rs[-2]))/dk
+    # dJdb2=(J(k,b+db,rs[-2])-J(k,b,rs[-2]))/db
+
+    # dJdk3=(J(k+dk,b,rs[0])-J(k,b,rs[0]))/dk
+    # dJdb3=(J(k,b+db,rs[0])-J(k,b,rs[0]))/db
+
+    # dJdk4=(J(k+dk,b,rs[1])-J(k,b,rs[1]))/dk
+    # dJdb4=(J(k,b+db,rs[1])-J(k,b,rs[1]))/db
+
+    # # print(dJdk,dJdb)
+
+    # lr=0.01
+
+    # k+=lr*(dJdk1+dJdk2-dJdk3)
+    # b+=10*lr*(dJdb1+dJdb2-dJdb3)
+    drawline(k,b,'g-.')
+    plt.show()
+
+main()

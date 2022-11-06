@@ -1,0 +1,88 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Oct 20 10:15:35 2022
+
+@author: Lenovo
+"""
+#定义地
+import numpy as np
+import cv2
+class map:
+    def __init__(self,num_city,num_king):
+        self.bg=np.zeros((600,600,3),dtype=np.uint8)
+        self.bg[:,:,0]=173
+        self.bg[:,:,1]=205
+        self.bg[:,:,2]=255
+        
+        
+        self.city_img=cv2.resize(cv2.imread('one1.jpg'),(30,30))
+        
+        self.kings=[]
+        
+        for i in range(num_king):
+            tmp=cv2.resize(cv2.imread('one2.png'.format(i+1)),(60,60))
+            self.kings.append(tmp)#国王图片的备份
+            
+        self.num_city=num_city
+        self.num_king=num_king
+        
+        #随机生成城市坐标
+        self.cx=np.random.randint(30,570,self.num_city)
+        self.cy=np.random.randint(30,570,self.num_city)
+        
+        #随机生成国王目标
+        self.kx=np.random.randint(30,570,self.num_king)
+        self.ky=np.random.randint(30,570,self.num_king)
+        self.control_list=-1
+        
+    def calcontrol(self):
+        self.control_list=[]#存放每个城市所属于的国王
+        for i in range(self.num_city):
+            diss=[]#第一个城市与所有国王之间的距离
+            for j in range(self.num_king):
+                dis=(self.cx[i]-self.kx[j])**2+(self.cy[i]-self.ky[j])**2
+                diss.append(dis)
+            closest_king_ind=np.argmin(np.array(diss))
+            self.control_list.append(closest_king_ind)
+                
+    def visual(self):
+       
+        self.img=self.bg.copy()
+        for ind in range(self.num_city):
+            x,y=self.cx[ind],self.cy[ind]
+            x_low,x_up=x-15,x+15
+            y_low,y_up=y-15,y+15
+            self.img[x_low:x_up,y_low:y_up,:]=0
+            if not self.control_list==-1:
+                self.img[x_low:x_up,y_low:y_up,self.control_list[ind]]=255
+          #  self.img[x_low:x_up,y_low:y_up,self.control_list[ind]]=255
+        for ind in range(self.num_king):
+            x,y=self.kx[ind],self.ky[ind]
+            x_low,x_up=x-30,x+30
+            y_low,y_up=y-30,y+30
+            self.img[x_low:x_up,y_low:y_up,:]=self.kings[ind].copy()  
+            #self.img[x_low:x_up,y_low:y_up,self.control_list[ind]]=255
+    def kingmove(self):
+        for ind in range(self.num_king):
+            x_sum=0
+            y_sum=0
+            domination=[]
+            for j in range(self.num_city):
+                if self.control_list[j]==ind:
+                    domination.append(j)
+                    x_sum+=self.cx[j]
+                    y_sum+=self.cy[j]
+            x_mean=int(x_sum/len(domination))
+            y_mean=int(y_sum/len(domination))
+            self.kx[ind]=x_mean
+            self.ky[ind]=y_mean
+m=map(40,3)
+m.visual()
+cv2.imshow('map_org'.format('i'),m.img)
+for i in range(10):
+    m.calcontrol()
+    m.kingmove()
+    m.visual()
+    cv2.imshow('map_agter_move_{}'.format(i),m.img)
+    cv2.waitKey()
+cv2.destroyAllWindows()
